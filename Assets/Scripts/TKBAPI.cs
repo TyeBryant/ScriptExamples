@@ -152,7 +152,7 @@ namespace TKBAPI
             newMeshObj.AddComponent(typeof(MeshCollider));
             newMeshObj.GetComponent<MeshCollider>().inflateMesh = true;
             newMeshObj.GetComponent<MeshCollider>().convex = true;
-            newMeshObj.AddComponent(typeof(Rigidbody));
+            //newMeshObj.AddComponent(typeof(Rigidbody));
             newMeshObj.transform.position = position;
             newMeshObj.transform.localScale *= 5;
         }
@@ -165,8 +165,8 @@ namespace TKBAPI
 
             Vector3 a = poly.verts[s - 1];
 			float da = Vector3.Dot(n, a) - d;
-		 
-		    for (int i = 0; i < s; ++i)
+
+            for (int i = 0; i < s; ++i)
 		    {
                 Vector3 b = poly.verts[i];
                 float db = Vector3.Dot(n, b) - d;

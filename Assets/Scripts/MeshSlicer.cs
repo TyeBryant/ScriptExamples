@@ -15,14 +15,14 @@ public class MeshSlicer : MonoBehaviour {
 
     private void OnTriggerEnter(Collider col)
     {
-        n1 = transform.position;
-        n3 = top.position;
-        n4 = bottom.position;
+        n1 = col.transform.InverseTransformVector(transform.position);
+        n3 = col.transform.InverseTransformVector(top.position);
+        n4 = col.transform.InverseTransformVector(bottom.position);
     }
 
     private void OnTriggerExit(Collider col)
     {
-        n2 = transform.position;
+        n2 = col.transform.InverseTransformVector(transform.position);
 
         Mesh otherMesh = col.GetComponent<MeshFilter>().mesh;
         List<MeshAPI.Poly> meshPolys = new List<MeshAPI.Poly>();
@@ -41,27 +41,36 @@ public class MeshSlicer : MonoBehaviour {
         Vector3 n = nPlane.normal;
         n.Normalize();
 
-        float d = nPlane.GetDistanceToPoint((n2 + n1) * 0.5f);
+        float d = Vector3.Distance(n, n2);
 
         MeshAPI.SliceAllPolygons(n, d, meshPolys, ref frontOut, ref backOut);
 
         MeshAPI.CreateMeshObject(frontOut, col.transform.position - n * (col.transform.localScale.y / 2 + 0.1f), col.GetComponent<MeshRenderer>().material);
         MeshAPI.CreateMeshObject(backOut, col.transform.position - n * (col.transform.localScale.y / 2), col.GetComponent<MeshRenderer>().material);
 
-        Destroy(col.gameObject);
+        //Destroy(col.gameObject);
 
         Debug.Log("front: " + frontOut.Count);
         Debug.Log("back: " + backOut.Count);
+        Debug.Log("n: " + n);
+        Debug.Log("n1: " + n1);
+        Debug.Log("n2: " + n2);
+        Debug.Log("n3: " + n3);
+        Debug.Log("n4: " + n4);
+        Debug.Log("d: " + d);
     }
 
-    /*private void OnDrawGizmos()
+    private void OnDrawGizmos()
     {
-        foreach (MeshAPI.Poly poly in frontOut)
+        Gizmos.DrawLine(n3, n2);
+        Gizmos.DrawLine(n2, n4);
+        Gizmos.DrawLine(n4, n3);
+        /*foreach (MeshAPI.Poly poly in frontOut)
             foreach (Vector3 vert in poly.verts)
                 Gizmos.DrawSphere(vert, 0.01f);
 
         foreach (MeshAPI.Poly poly in backOut)
             foreach (Vector3 vert in poly.verts)
-                Gizmos.DrawSphere(vert + Vector3.up, 0.01f);
-    }*/
+                Gizmos.DrawSphere(vert + Vector3.up, 0.01f);*/
+    }
 }
